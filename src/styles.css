@@ -1,1 +1,47 @@
-@import "tailwindcss";
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+}
+
+.home-main {
+  display: grid;
+  min-height: 100vh;
+  place-items: center;
+}
+
+.home-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.home-heading {
+  margin: 0;
+  font-size: 3rem;
+  font-weight: 700;
+  color: #ef4444;
+}
+
+.home-heading--blue {
+  color: #3b82f6;
+}
+
+.page-padding {
+  padding: 1rem;
+}
+
+.heading-page {
+  margin: 0 0 0.5rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.heading-error {
+  color: #dc2626;
+}

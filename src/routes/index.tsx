@@ -1,4 +1,3 @@
-import { cn } from "@lightsound/cn/tw-merge";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 
@@ -9,9 +8,9 @@ export const Route = createFileRoute("/")({
 function Home() {
   const [isBlue, setIsBlue] = useState(false);
   return (
-    <main className="grid min-h-screen place-items-center">
-      <div className="space-y-4">
-        <h1 className={cn("text-5xl font-bold text-red-500", isBlue && "text-blue-500")}>
+    <main className="home-main">
+      <div className="home-stack">
+        <h1 className={isBlue ? "home-heading home-heading--blue" : "home-heading"}>
           Hello World!
         </h1>
         <button type="button" onClick={() => setIsBlue((prev) => !prev)}>
