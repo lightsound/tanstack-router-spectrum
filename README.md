@@ -1,48 +1,52 @@
-# TanStack Start Starter
+# TanStack Router + React Spectrum
 
-A minimal application template built with [TanStack Start](https://tanstack.com/start) and [TanStack Router](https://tanstack.com/router), using [Vite+](https://viteplus.dev/) as the unified CLI for development, builds, formatting, linting, and tests.
+[Vite+](https://viteplus.dev/) を CLI として、[TanStack Router](https://tanstack.com/router) のファイルベースルーティング（`src/routes/`）と [React Spectrum 2 (S2)](https://react-spectrum.adobe.com/s2/) を使う最小構成の Vite SPA です。
 
-## What you get
+## 含まれるもの
 
-- **TanStack Start** with file-based routing under `src/routes/`
-- **React 19** and **TypeScript**
-- **Vite+**-managed tooling: Oxlint, Oxfmt, Vitest-style testing via `vite-plus/test` (see [AGENTS.md](AGENTS.md) for workflow and pitfalls)
+- **TanStack Router**（クライアントのみ・SSR なし）。ルートツリーは `@tanstack/router-plugin` により `src/routeTree.gen.ts` に生成されます。
+- **React 19** と **TypeScript**
+- **React Spectrum S2** — ルートで `Provider` と `@react-spectrum/s2/page.css` を読み込み、レイアウトやデザイントークンは主に S2 の [`style()`](https://react-spectrum.adobe.com/s2/) で記述します（Tailwind CSS は含みません）。
+- **[React Compiler](https://react.dev/learn/react-compiler)** — `babel-plugin-react-compiler` と [`@vitejs/plugin-react` の `reactCompilerPreset`](https://github.com/vitejs/vite-plugin-react/tree/main/packages/plugin-react#react-compiler) ＋ `@rolldown/plugin-babel`（`vite.config.ts`）。開発時は React DevTools でコンポーネント名横の「Memo ✨」で最適化の有無を確認できます。
+- **`unplugin-parcel-macros`** — S2 が内部で使うマクロを Vite で解決するために利用しています。
+- **`@react-aria/optimize-locales-plugin`** — バンドルに含めるロケールを `ja-JP` と `en-US` に絞ります。
+- **Vite+** 経由の Oxlint / Oxfmt / テスト（詳細は [AGENTS.md](AGENTS.md)）
 
-## Requirements
+## 前提
 
-Install [Vite+](https://viteplus.dev/guide/) so the `vp` command is available on your `PATH`.
+[公式手順](https://viteplus.dev/guide/)に従い、`vp` が `PATH` に通っていること。
 
-This repo pins **`pnpm@10.32.1`** as the package manager; Vite+ (`vp install`, etc.) is the supported way to manage dependencies—avoid calling `pnpm` / `npm` / `yarn` directly for installs unless you know you need an exception.
+パッケージマネージャは **`pnpm@10.32.1`** を想定しています。依存関係の操作は **`vp install` など Vite+ 経由**で行うのが推奨です。
 
-## Getting started
+## セットアップ
 
 ```bash
-git clone https://github.com/lightsound/tanstack-start-start.git
-cd tanstack-start-start
+git clone https://github.com/lightsound/tanstack-router-spectrum.git
+cd tanstack-router-spectrum
 vp install
 vp dev
 ```
 
-Open the URL printed in the terminal (Vite’s default is usually `http://localhost:5173`).
+ルートの `index.html` が `src/main.tsx` をエントリとして読み込みます。ターミナルに表示される URL を開きます（Vite の既定は多くの場合 `http://localhost:5173`）。
 
-## Everyday commands
+## よく使うコマンド
 
-| Command      | Purpose                                                          |
-| ------------ | ---------------------------------------------------------------- |
-| `vp dev`     | Start the dev server with HMR                                    |
-| `vp build`   | Production build                                                 |
-| `vp preview` | Preview the production build locally                             |
-| `vp check`   | Format, lint, and type-check (fix with `--fix` where applicable) |
-| `vp test`    | Run tests                                                        |
-| `vp help`    | List built-in commands and options                               |
+| コマンド     | 用途                                                         |
+| ------------ | ------------------------------------------------------------ |
+| `vp dev`     | 開発サーバー（HMR）                                          |
+| `vp build`   | 本番ビルド                                                   |
+| `vp preview` | ビルド結果のローカルプレビュー                               |
+| `vp check`   | 整形・Lint・型チェック（`--fix` で自動修正できるものは修正） |
+| `vp test`    | テスト実行                                                   |
+| `vp help`    | 組み込みコマンド一覧                                         |
 
-`package.json` scripts (`dev`, `build`, `check`, `test`, …) delegate to these same `vp` entry points.
+`package.json` の `scripts` はこれらの `vp` エントリに委譲しています。
 
-Optional maintenance tools (not part of `vp check`):
+メンテナンス用（`vp check` には含まれません）:
 
-- `vp run knip` — unused files, dependencies, exports (`knip.config.ts`)
-- `vp run doctor` — React health checks (`react-doctor`, `--no-lint` in the script)
+- `vp run knip` — 未使用ファイル・依存・エクスポート（`knip.config.ts`）
+- `vp run doctor` — React 向けヘルスチェック（`react-doctor`、`--no-lint` 付きスクリプト）
 
-## License
+## ライセンス
 
-[MIT](LICENSE.md).
+[MIT](LICENSE.md)。
