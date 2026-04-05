@@ -1,61 +1,99 @@
-/// <reference types="vite-plus/client" />
-import { HeadContent, Outlet, Scripts, createRootRoute } from "@tanstack/react-router";
+import { Content, Heading, Provider, Text } from "@react-spectrum/s2";
+import { style } from "@react-spectrum/s2/style" with { type: "macro" };
+import {
+  Outlet,
+  createRootRoute,
+  useRouter,
+  type NavigateOptions,
+  type ToOptions,
+} from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 
-import appCss from "../styles.css?url";
+import "@react-spectrum/s2/page.css";
+import "../global.css";
+
+const fallbackPage = style({
+  display: "flex",
+  flexDirection: "column",
+  gap: 16,
+  paddingX: 24,
+  paddingY: 28,
+  minHeight: "screen",
+  width: "full",
+  boxSizing: "border-box",
+  backgroundColor: "layer-1",
+});
+
+const errorTitle = style({
+  color: "negative",
+});
+
+const bodyText = style({
+  font: "body",
+  color: "neutral",
+});
+
+declare module "@react-spectrum/s2" {
+  interface RouterConfig {
+    href: ToOptions;
+    routerOptions: Pick<NavigateOptions, Exclude<keyof NavigateOptions, keyof ToOptions>>;
+  }
+}
 
 export const Route = createRootRoute({
   component: RootComponent,
   errorComponent: ErrorComponent,
-  head: () => ({
-    links: [{ href: appCss, rel: "stylesheet" }],
-    meta: [
-      { charSet: "utf8" },
-      { content: "width=device-width, initial-scale=1", name: "viewport" },
-      { title: "TanStack Start Start" },
-    ],
-  }),
   notFoundComponent: NotFoundComponent,
   pendingComponent: PendingComponent,
 });
 
 function RootComponent() {
+  const router = useRouter();
+
   return (
-    <html lang="ja">
-      <head>
-        <HeadContent />
-      </head>
-      <body>
-        <Outlet />
-        <TanStackRouterDevtools position="bottom-right" />
-        <Scripts />
-      </body>
-    </html>
+    <Provider
+      locale="ja-JP"
+      router={{
+        navigate: (href: ToOptions, opts) => {
+          if (typeof href === "string") return;
+          return router.navigate({ ...href, ...opts });
+        },
+        useHref: (href) => {
+          if (typeof href === "string") return href;
+          return router.buildLocation(href).href;
+        },
+      }}
+    >
+      <Outlet />
+      <TanStackRouterDevtools position="bottom-right" />
+    </Provider>
   );
 }
 
 function NotFoundComponent() {
   return (
-    <div className="page-padding">
-      <h1 className="heading-page">404</h1>
-      <p>ページが見つかりませんでした。</p>
-    </div>
+    <Content styles={fallbackPage}>
+      <Heading level={1}>404</Heading>
+      <Text styles={bodyText}>ページが見つかりませんでした。</Text>
+    </Content>
   );
 }
 
 function ErrorComponent({ error }: { error: Error }) {
   return (
-    <div className="page-padding">
-      <h1 className="heading-page heading-error">エラー</h1>
-      <p>{error.message}</p>
-    </div>
+    <Content styles={fallbackPage}>
+      <Heading level={1} styles={errorTitle}>
+        エラー
+      </Heading>
+      <Text styles={bodyText}>{error.message}</Text>
+    </Content>
   );
 }
 
 function PendingComponent() {
   return (
-    <div className="page-padding">
-      <p>読み込み中...</p>
-    </div>
+    <Content styles={fallbackPage}>
+      <Text styles={bodyText}>読み込み中...</Text>
+    </Content>
   );
 }

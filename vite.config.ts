@@ -1,6 +1,8 @@
+import optimizeLocales from "@react-aria/optimize-locales-plugin";
 import babel from "@rolldown/plugin-babel";
-import { tanstackStart } from "@tanstack/react-start/plugin/vite";
+import { tanstackRouter } from "@tanstack/router-plugin/vite";
 import react, { reactCompilerPreset } from "@vitejs/plugin-react";
+import macros from "unplugin-parcel-macros";
 import { defineConfig } from "vite-plus";
 
 export default defineConfig({
@@ -43,10 +45,30 @@ export default defineConfig({
   staged: {
     "*.{js,jsx,ts,tsx,json,css}": "vp check --fix",
   },
+  build: {
+    target: ["es2022"],
+    cssMinify: "lightningcss",
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (/macro-(.*)\.css$/.test(id) || /@react-spectrum\/s2\/.*\.css$/.test(id)) {
+            return "s2-styles";
+          }
+        },
+      },
+    },
+  },
   plugins: [
-    tanstackStart(),
-    // react's vite plugin must come after start's vite plugin
+    {
+      ...optimizeLocales.vite({
+        locales: ["ja-JP", "en-US"],
+      }),
+      enforce: "pre",
+    },
+    macros.vite(),
+    tanstackRouter({ target: "react" }),
     react(),
+    // React Compiler: reactCompilerPreset from @vitejs/plugin-react + @rolldown/plugin-babel
     babel({ presets: [reactCompilerPreset()] }),
   ],
   resolve: {
